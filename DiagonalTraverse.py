@@ -2,7 +2,7 @@ class Solution:
     def findDiagonalOrder(self, mat: List[List[int]]) -> List[int]:
         rows, cols = len(mat), len(mat[0])
         result = []
-        
+
         for diag in range(rows + cols - 1):
             intermediate = []
             r = 0 if diag < cols else diag - cols + 1
@@ -17,5 +17,4 @@ class Solution:
                 result.extend(intermediate[::-1])
             else:
                 result.extend(intermediate)
-        
         return result
