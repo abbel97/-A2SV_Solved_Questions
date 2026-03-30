@@ -1,36 +1,53 @@
-
 import sys
-input = sys.stdin.readline
+from collections import Counter
+input = sys.stdin.read
 
-t = int(input())
-for _ in range(t):
-    n, l, r = map(int, input().split())
-    colors = list(map(int, input().split()))
+def solve():
+    data = input().split()
+    if not data:
+        return
+    
+    idx = 0
+    t = int(data[idx])
+    idx += 1
+    
+    results = []
+    for _ in range(t):
+        n = int(data[idx])
+        l = int(data[idx + 1])
+        r = int(data[idx + 2])
+        idx += 3
+        
+        c = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        left_socks = Counter(c[:l])
+        right_socks = Counter(c[l:])
+        for color in left_socks:
+            if color in right_socks:
+                common = min(left_socks[color], right_socks[color])
+                left_socks[color] -= common
+                right_socks[color] -= common
+                l -= common
+                r -= common
+        
+        if l < r:
+            left_socks, right_socks = right_socks, left_socks
+            l, r = r, l
+            
+        ans = 0
+        diff = (l - r) // 2
+        
+        for color in left_socks:
+            can_take = left_socks[color] // 2
+            take = min(can_take, diff)
+            ans += take  
+            diff -= take
+            l -= 2 * take
+     
+        results.append(str(ans + l))
+        
+    sys.stdout.write("\n".join(results) + "\n")
 
-    left_colors = {}
-    right_colors = {}
-
-    for i in range(l):
-        left_colors[colors[i]] = left_colors.get(colors[i], 0) + 1
-
-    for i in range(l, n):
-        right_colors[colors[i]] = right_colors.get(colors[i], 0) + 1
-
-    pairs = 0
-    for color in left_colors:
-        if color in right_colors:
-            pairs += min(left_colors[color], right_colors[color])
-
-    unmatched_left = l - pairs
-    unmatched_right = r - pairs
-
-    cost = 0
-    if unmatched_left > unmatched_right:
-        cost += (unmatched_left - unmatched_right) // 2
-        cost += unmatched_right + (unmatched_left - unmatched_right) // 2
-    else:
-        cost += (unmatched_right - unmatched_left) // 2
-        cost += unmatched_left + (unmatched_right - unmatched_left) // 2
-
-    print(cost)
-
+if __name__ == "__main__":
+    solve()
