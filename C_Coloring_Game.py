@@ -61,24 +61,21 @@ read and understand the problem statement above and implement the solution
 
 
  """
-#The code below is for the above problem statement, but it have wrong output can you check and fix it?
-
 t = int(input())
-
 for _ in range(t):
     n = int(input())
     a = list(map(int, input().split()))
-    
-    a.sort()
-    
-    l = 0
-    max_len = 0
-    
-    for r in range(n):
-        while a[r] > 2 * a[l]:
-            l += 1
-        
-        max_len = max(max_len, r - l + 1)
-    
-    print(n - max_len)
 
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + 1
+
+    ans = 0
+    for i in range(n):
+        for j in range(i):
+            need = max(a[-1], 2 * a[i]) - a[i] - a[j]
+            pos = 0
+            while pos < j and a[pos] <= need:
+                pos += 1
+            ans += j - pos
+    print(ans)   #Same thing stil TLE
